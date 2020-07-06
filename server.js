@@ -109,6 +109,8 @@ app.use('/api/posts', posts);
  // app.use(express.static('social=fe/dist'));
 
    app.get('/', (req, res) => {
+
+     console.log('hello')
      res.send('hello')
    });
 
