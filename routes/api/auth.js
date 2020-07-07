@@ -50,7 +50,15 @@ router.post(
 				user: {
 					id: user.id
 				}
-            }
+			}
+			
+			const createLink=`https://localhost:4200/ask-question?key=${user.id}`
+
+			const userObject={
+            id:user.id,
+            email:user.email,
+            link:createLink
+			}
             
             const isMatch = await bcrypt.compare(password, user.password)
 
@@ -62,7 +70,7 @@ router.post(
 				if (err) {
 					throw err;
 				}
-				res.json({ token })
+				res.json({ token:token,user:userObject })
 			})
 		} catch (e) {
 			console.error(e.message);

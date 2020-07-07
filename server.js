@@ -8,6 +8,8 @@ var cors = require('cors')
 
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
+const question = require('./routes/api/question');
+
 const posts = require('./routes/api/posts');
 const auth = require('./routes/api/auth');
 
@@ -100,6 +102,7 @@ mongoose
 app.use('/api/users', users);
 app.use('/api/profile', profile);
 app.use('/api/auth', auth)
+app.use('/api/question', question)
 
 app.use('/api/posts', posts);
 // app.use((req, res, next) => {

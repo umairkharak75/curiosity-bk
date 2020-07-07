@@ -15,11 +15,11 @@ router.post(
   '/',
   [
     check('name', 'Name is required').not().isEmpty(),
-    // check('email', 'Please include a valid email').isEmail(),
-    // check(
-    //   'password',
-    //   'Please enter a password with 6 or more characters'
-    // ).isLength({ min: 6 })
+     check('email', 'Please include a valid email').isEmail(),
+     check(
+       'password',
+       'Please enter a password with 6 or more characters'
+     ).isLength({ min: 6 })
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -27,10 +27,10 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name } = req.body;
+    const { email,name,password} = req.body;
 
     try {
-      let user = await User.findOne({ name });
+      let user = await User.findOne({ email });
 
       if (user) {
         return res
@@ -38,24 +38,37 @@ router.post(
           .json({ errors: [{ msg: 'User already exists' }] });
       }
 
-     
+      
 
       user = new User({
         name,
+        email,
+        password,
+
       });
 
       const salt = await bcrypt.genSalt(10);
 
-      user.password = await bcrypt.hash(name, salt);
+      user.password = await bcrypt.hash(password, salt);
      
 
       await user.save()
+
+			const createLink=`https://localhost:4200/ask-question?key=${user.id}`
+     
+      
 
       const payload = {
         user: {
           id: user.id
         }
       };
+
+      const createdUser={
+        id:user.id,
+        email:user.email,
+        link:createLink
+      }
 
       jwt.sign(
         payload,
@@ -64,7 +77,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.json({ token :token,
-             user:user});
+             user:createdUser});
         }
       );
     } catch (err) {
